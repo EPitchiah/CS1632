@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="deliverable-5-static-analysis-s-squared-d5">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/BeanCounterSolution.jar!/" />
+      <root url="jar://$PROJECT_DIR$/BeanCounter.jar!/" />
+      <root url="jar://$PROJECT_DIR$/BeanCounterBuggy.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

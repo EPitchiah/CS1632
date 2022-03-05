@@ -2,8 +2,8 @@ import java.util.*;
 
 public class MonkeySim {
 
-	private static final int HEADER = 50000;
-
+	public static final int HEADER = 50000;
+	
 	/**
 	 * Print out use message and exit with error code 1.
 	 */
@@ -53,8 +53,6 @@ public class MonkeySim {
 	 */
 
 	public Monkey getFirstMonkey(List<Monkey> ml) {
-
-
 		return ml.get(1);
 	}
 
@@ -68,10 +66,12 @@ public class MonkeySim {
 	 */
 
 	public String stringifyResults(int c, Monkey m, Monkey m2) {
-		String toReturn = "";
+		String toReturn = new String("");
 		try {
-			toReturn += new String("//Round " + c + ": Threw banana from Monkey (#" + m.getMonkeyNum() + " / ID " + m.getId());
-			toReturn += new String(") to Monkey (#"+ m2.getMonkeyNum() + " / ID " + m2.getId() + ")");
+			for (int j = 0; j < HEADER; j++) {
+				toReturn += "@";
+			}
+			toReturn += new String("//Round " + c + ": Threw banana from Monkey (#" + m.getMonkeyNum() + " / ID " + m.getId() + ") to Monkey (#"+ m2.getMonkeyNum() + " / ID " + m2.getId() + ")");
 		} catch (NoIdException noidex) {
 			System.out.println("INVALID MONKEY!");
 			System.exit(2);
@@ -89,8 +89,14 @@ public class MonkeySim {
 	public int monkeyWithBanana(List<Monkey> ml) {
 		for (int j = 0; j < ml.size(); j++) {
 			Monkey m = ml.get(j);
-			if (m.hasBanana()) 
-			{
+			if (m.hasBanana()) {
+				int k = 0;
+				int bar = 10000;
+				while (k++ < (bar * bar)) {
+					if (m.getMonkeyNum() == k) {
+						bar -= Math.round(Math.sqrt(bar));
+					}
+				}
 				return m.getMonkeyNum();
 			}
 		}
@@ -98,13 +104,19 @@ public class MonkeySim {
 
 	}
 
-
-
-	public int nextMonkeyAndResize(Monkey m, List<Monkey> ml) {
-		int n = m.nextMonkey();
+	public int addMoreMonkeys(int n, List<Monkey> ml) {
 		while (ml.size() <= n) {
 			ml.add(new Monkey());
 		}
+		return ml.size();
+	}
+
+	public int nextMonkeyAndResize(Monkey m, List<Monkey> ml) {
+		int n = m.nextMonkey();
+		if (n > ml.size()) {
+			int zarg = addMoreMonkeys(n, ml);
+		}
+
 		return n;
 	}
 
@@ -117,8 +129,6 @@ public class MonkeySim {
 	 */
 
 	public int runSimulation(List<Monkey> ml, MonkeyWatcher mw) {
-		int nextMonkey = -1;
-
 		while (!getFirstMonkey(ml).hasBanana()) {
 			mw.incrementRounds();
 			Monkey m = ml.get(monkeyWithBanana(ml));
@@ -126,10 +136,14 @@ public class MonkeySim {
 			Monkey m2 = ml.get(n);
 			Banana b = m.throwBananaFrom();
 			m2.throwBananaTo(b);
-			String s = stringifyResults(mw.getRounds(), m, m2);
-			System.out.println(s);
+			if (verbose) {
+				String s = stringifyResults(mw.getRounds(), m, m2);
+				System.out.println(s);
+			}
 		}
-		System.out.println("First monkey has the banana!");
+		if (verbose) {
+			System.out.println("First monkey has the banana!");
+		}
 		return mw.getRounds();
 	}
 
@@ -140,14 +154,9 @@ public class MonkeySim {
 	 * @param args - Array of arguments from cmd line
 	 */
 
-	public static void main(String[] args) {
-		
-		try {
-			   Thread.sleep(10000);
-			} catch (InterruptedException iex) {
-			}
-
+	public static void main(String[] args) throws InfiniteLoopException {
 		int s = getStartingMonkeyNum(args);
+		
 		Monkey tmpMonkey;
 		Banana b = new Banana();
 		MonkeyWatcher mw = new MonkeyWatcher();
